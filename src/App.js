@@ -45,6 +45,50 @@ function PersonBillOutputText({ name }) {
 
 function PeopleList() {
   return (
-    <div className="slip">This is where the people will add their expences</div>
+    <div className="slip">
+      <Title>People</Title>
+      <Person name="Dude 1"></Person>
+      <Person name="Dude 2"></Person>
+    </div>
+  );
+
+  function Person({ name }) {
+    return (
+      <div className="person">
+        <h3>{name}</h3>
+        <p className="person-bill-output">
+          Grand Total: <span>XX</span>
+        </p>
+        <PersonsItems></PersonsItems>
+        <Tip></Tip>
+      </div>
+    );
+  }
+}
+
+function PersonsItems() {
+  return (
+    <div className="person-items">
+      <label>What did you have?</label>
+      <input type="text"></input>
+
+      <p className="person-item">
+        Total: <span>XX</span>
+      </p>
+    </div>
+  );
+}
+
+function Tip() {
+  return (
+    <div className="tip">
+      <label>Tip Selection</label>
+      <select value="tip" default={0}>
+        <option value={0}> 0% </option>
+        <option value={5}> 5% </option>
+        <option value={10}> 10% </option>
+        <option value={20}>Custom </option>
+      </select>
+    </div>
   );
 }
