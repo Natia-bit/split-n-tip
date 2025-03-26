@@ -16,3 +16,34 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+h1,
+h2 {
+  text-align: center;
+  font-family: monospace;
+  padding: 2em;
+}
+
+.bill {
+  width: 400px;
+  margin: 100px auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  padding: 20px 24px;
+  padding-right: 48px;
+  border-top: 4px solid #fff;
+  border-bottom: 4px solid #fff;
+  /* grid-template-columns: auto 2fr auto; */
+  align-items: left;
+}
+
+.person-bill-output {
+  color: red;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
