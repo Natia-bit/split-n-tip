@@ -2,7 +2,10 @@ export default function App() {
   return (
     <div className="App">
       <MainTitle>Split & Tip</MainTitle>
-      <Bill></Bill>
+      <div className="slip-container">
+        <Bill></Bill>
+        <PeopleList></PeopleList>
+      </div>
     </div>
   );
 }
@@ -17,13 +20,13 @@ function Title({ children }) {
 
 function Bill() {
   return (
-    <div className="bill">
+    <div className="slip">
       <Title>Bill</Title>
       <label>Bill amount</label>
       <input type="text"></input>
 
       <p className="person-bill-output">
-        Final bill <span>R XX</span>{" "}
+        Final bill <span>R XX</span>
       </p>
       <p>Final payment details including tips </p>
       <PersonBillOutputText name="Dude One"></PersonBillOutputText>
@@ -37,5 +40,11 @@ function PersonBillOutputText({ name }) {
     <div className="person-bill-output">
       {name} <span>R XX</span>
     </div>
+  );
+}
+
+function PeopleList() {
+  return (
+    <div className="slip">This is where the people will add their expences</div>
   );
 }
