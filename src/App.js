@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export default function App() {
   return (
     <div className="App">
@@ -18,6 +20,16 @@ function Title({ children }) {
   return <h2>{children}</h2>;
 }
 
+function CostDisplay({ price, children }) {
+  return (
+    <div>
+      <p className="person-bill-output">
+        {children} <span>R {price}</span>
+      </p>
+    </div>
+  );
+}
+
 function Bill() {
   return (
     <div className="slip">
@@ -25,6 +37,7 @@ function Bill() {
       <label>Bill amount</label>
       <input type="text"></input>
 
+      <CostDisplay price={"xx"}>Final Bill</CostDisplay>
       <p className="person-bill-output">
         Final bill <span>R XX</span>
       </p>
@@ -53,42 +66,92 @@ function PeopleList() {
   );
 
   function Person({ name }) {
+    const [personsTotal, setPersonsTotal] = useState(0);
+    const [tip, setTip] = useState(0);
+
+    const grandTotal = personsTotal + tip;
+
+    const addItems = (e) => {
+      const sumArray = e.target.value.split(",");
+      const sum = sumArray.reduce(function (a, b) {
+        return parseFloat(a) + parseFloat(b);
+      }, 0);
+      if (sum) setPersonsTotal(sum);
+    };
+
+    function handleTipChange(e) {
+      setTip(Number(e.target.value));
+    }
+
     return (
       <div className="person">
         <h3>{name}</h3>
-        <p className="person-bill-output">
-          Grand Total: <span>XX</span>
-        </p>
-        <PersonsItems></PersonsItems>
-        <Tip></Tip>
+        <CostDisplay price={grandTotal.toFixed(2)}>Grand Total:</CostDisplay>
+        <PersonsItems
+          pTotal={personsTotal}
+          onAddingItems={addItems}
+        ></PersonsItems>
+        <Tip
+          tip={tip}
+          onTipChange={handleTipChange}
+          pTotal={personsTotal}
+        ></Tip>
       </div>
     );
   }
 }
 
-function PersonsItems() {
+function PersonsItems({ pTotal, onAddingItems }) {
   return (
     <div className="person-items">
       <label>What did you have?</label>
-      <input type="text"></input>
-
-      <p className="person-item">
-        Total: <span>XX</span>
-      </p>
+      <input type="text" onChange={onAddingItems}></input>
+      <CostDisplay price={pTotal.toFixed(2)}>Total amount: </CostDisplay>
     </div>
   );
 }
 
-function Tip() {
+function Tip({ tip, pTotal, onTipChange }) {
+  const [customValue, setCustomValue] = useState(0);
+  const [isCustomSelected, setIsCustomSelected] = useState(false);
+
+  function handleSelectChange(e) {
+    if (e.target.value === "custom") {
+      setIsCustomSelected(true);
+      onTipChange({ target: { value: customValue || 0 } });
+    } else {
+      setIsCustomSelected(false);
+      onTipChange(e);
+    }
+  }
+
+  function handleCustomTip(e) {
+    setCustomValue(e.target.value);
+    onTipChange({ target: { value: e.target.value } });
+  }
+
   return (
     <div className="tip">
+      <CostDisplay price={tip.toFixed(2)}>Total Tip</CostDisplay>
       <label>Tip Selection</label>
-      <select value="tip" default={0}>
-        <option value={0}> 0% </option>
-        <option value={5}> 5% </option>
-        <option value={10}> 10% </option>
-        <option value={20}>Custom </option>
+      <select
+        value={isCustomSelected ? "custom" : tip}
+        onChange={handleSelectChange}
+      >
+        <option value={(0 * pTotal) / 100}> 0% </option>
+        <option value={(5 * pTotal) / 100}> 5% </option>
+        <option value={(10 * pTotal) / 100}> 10% </option>
+        <option value={(15 * pTotal) / 100}> 15% </option>
+        <option value="custom">Custom</option>
       </select>
+      {isCustomSelected && (
+        <input
+          type="number"
+          value={customValue}
+          onChange={handleCustomTip}
+          placeholder="Enter custom tip"
+        ></input>
+      )}
     </div>
   );
 }
