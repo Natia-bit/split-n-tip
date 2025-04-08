@@ -1,16 +1,19 @@
 import { useState } from "react";
 
-export default function App() {
-  return (
-    <div className="App">
-      <MainTitle>Split & Tip</MainTitle>
-      <div className="slip-container">
-        <Bill></Bill>
-        <PeopleList></PeopleList>
-      </div>
-    </div>
-  );
-}
+const data = [
+  {
+    id: 1,
+    name: "Dude One",
+    bill: 0,
+    tip: 0,
+  },
+  {
+    id: 2,
+    name: "Dude Two",
+    bill: 0,
+    tip: 0,
+  },
+];
 
 function MainTitle({ children }) {
   return <h1>{children}</h1>;
@@ -26,6 +29,42 @@ function CostDisplay({ price, children }) {
       <p className="person-bill-output">
         {children} <span>R {price}</span>
       </p>
+    </div>
+  );
+}
+
+export default function App() {
+  const [people, setPeople] = useState(data);
+  const [inputValue, setInputValues] = useState({});
+
+  function listItems(id, input) {
+    setInputValues((prevInputs) => ({ ...prevInputs, [id]: input }));
+
+    const sumArray = input
+      .split(",")
+      .map((num) => parseFloat(num.trim()))
+      .filter((num) => !isNaN(num));
+
+    const sum = sumArray.reduce((a, b) => a + b, 0);
+
+    setPeople((prevPeople) =>
+      prevPeople.map((person) =>
+        person.id === id ? { ...person, bill: sum } : person
+      )
+    );
+  }
+
+  return (
+    <div className="App">
+      <MainTitle>Split & Tip</MainTitle>
+      <div className="slip-container">
+        <Bill></Bill>
+        <PeopleList
+          people={people}
+          inputValue={inputValue}
+          onListItems={listItems}
+        ></PeopleList>
+      </div>
     </div>
   );
 }
@@ -56,28 +95,29 @@ function PersonBillOutputText({ name }) {
   );
 }
 
-function PeopleList() {
+function PeopleList({ people, onListItems, inputValue }) {
   return (
     <div className="slip">
       <Title>People</Title>
-      <Person name="Dude 1"></Person>
-      <Person name="Dude 2"></Person>
+      {people.map((person) => (
+        <Person
+          key={person.id}
+          person={person}
+          name={person.name}
+          onListItems={onListItems}
+          inputValue={inputValue}
+        ></Person>
+      ))}
     </div>
   );
 
-  function Person({ name }) {
-    const [personsTotal, setPersonsTotal] = useState(0);
-    const [tip, setTip] = useState(0);
+  function Person({ person, inputValue, onListItems }) {
+    const [tip, setTip] = useState(person.tip);
+    const grandTotal = person.bill + tip;
 
-    const grandTotal = personsTotal + tip;
-
-    const addItems = (e) => {
-      const sumArray = e.target.value.split(",");
-      const sum = sumArray.reduce(function (a, b) {
-        return parseFloat(a) + parseFloat(b);
-      }, 0);
-      if (sum) setPersonsTotal(sum);
-    };
+    // function handleInputChange(e) {
+    //   onListItems(person.id, e.target.value);
+    // }
 
     function handleTipChange(e) {
       setTip(Number(e.target.value));
@@ -85,28 +125,31 @@ function PeopleList() {
 
     return (
       <div className="person">
-        <h3>{name}</h3>
-        <CostDisplay price={grandTotal.toFixed(2)}>Grand Total:</CostDisplay>
+        <h3>{person.name}</h3>
+        <CostDisplay price={person.bill.toFixed(2)}>Grand Total:</CostDisplay>
         <PersonsItems
-          pTotal={personsTotal}
-          onAddingItems={addItems}
+          key={person.id}
+          person={person}
+          onListItems={(e) => onListItems(person.id, e.target.value)}
+          inputValue={inputValue[person.id] || ""}
         ></PersonsItems>
-        <Tip
-          tip={tip}
-          onTipChange={handleTipChange}
-          pTotal={personsTotal}
-        ></Tip>
+        <Tip tip={tip} onTipChange={handleTipChange} pTotal={grandTotal}></Tip>
       </div>
     );
   }
 }
 
-function PersonsItems({ pTotal, onAddingItems }) {
+function PersonsItems({ person, onListItems, inputValue }) {
   return (
     <div className="person-items">
       <label>What did you have?</label>
-      <input type="text" onChange={onAddingItems}></input>
-      <CostDisplay price={pTotal.toFixed(2)}>Total amount: </CostDisplay>
+      <input
+        type="text"
+        key={person.id}
+        value={inputValue || " "}
+        onChange={onListItems}
+      ></input>
+      <CostDisplay price={person.bill.toFixed(2)}>Total amount: </CostDisplay>
     </div>
   );
 }
