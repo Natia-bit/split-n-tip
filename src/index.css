@@ -10,9 +10,73 @@ html {
 }
 
 body {
-  height: 100vh;
+  /* height: 100vh; */
   color: #495057;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+h1,
+h2,
+h3 {
+  text-align: center;
+  font-family: monospace;
+  padding: 1em;
+}
+
+h1 {
+  padding-top: 2.5em;
+}
+
+h3 {
+  text-align: left;
+}
+
+.slip-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.slip {
+  width: 400px;
+  margin: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+  padding-top: 2em;
+  padding-bottom: 4em;
+  padding-left: 2em;
+  padding-right: 2em;
+  border-top: 4px solid #fff;
+  border-bottom: 4px solid #fff;
+  align-items: left;
+}
+
+.person {
+  border: 1px solid black;
+  padding: 1.3em;
+}
+.person-bill-output {
+  color: red;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.person-items,
+.tip {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  margin-top: 0.5em;
+}
+.person-item {
+  color: red;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
 }
