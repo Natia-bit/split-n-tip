@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const data = [
   {
@@ -73,13 +73,16 @@ function Bill({ people }) {
     0
   );
 
+  const billTotal = people.reduce((sum, person) => sum + person.bill, 0);
+  const tipTotal = people.reduce((sum, person) => sum + person.tip, 0);
+
   return (
     <div className="slip">
       <Title>Bill</Title>
-      <label>Bill amount</label>
-      <input type="text" />
 
-      <CostDisplay price={grandTotal.toFixed(2)}>Final Bill</CostDisplay>
+      <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip</CostDisplay>
+      <CostDisplay price={billTotal.toFixed(2)}>Bill</CostDisplay>
+      <CostDisplay price={tipTotal.toFixed(2)}>Total Tip</CostDisplay>
       <p className="person-bill-output"></p>
       <p>Final payment details including tips</p>
       {people.map((p) => (
@@ -118,7 +121,8 @@ function PeopleList({ people, onUpdateTip, onUpdateBill }) {
 }
 
 function Person({ person, onUpdateTip, onUpdateBill }) {
-  const total = person.bill + person.tip;
+  const billAndTip = person.bill + person.tip;
+  const bill = person.bill;
   const [inputValue, setInputValue] = useState("");
 
   function handleItemInput(e) {
@@ -126,7 +130,7 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
     setInputValue(newValue);
 
     const items = newValue
-      .split(",")
+      .split(/[ ,]+/)
       .map((v) => parseFloat(v.trim()))
       .filter((v) => !isNaN(v));
 
@@ -137,7 +141,7 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
   return (
     <div className="person">
       <h3>{person.name}</h3>
-      <CostDisplay price={total.toFixed(2)}>Grand Total:</CostDisplay>
+      <CostDisplay price={billAndTip.toFixed(2)}>Bill & Tip:</CostDisplay>
       <ItemInput
         person={person}
         value={inputValue}
@@ -146,7 +150,7 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
       <Tip
         tip={person.tip}
         onTipChange={(tip) => onUpdateTip(person.id, tip)}
-        total={total}
+        total={bill}
       />
     </div>
   );
@@ -157,7 +161,7 @@ function ItemInput({ person, value, onChange }) {
     <div className="person-items">
       <label>What did you have?</label>
       <input type="text" value={value} onChange={onChange} />
-      <CostDisplay price={person.bill.toFixed(2)}>Total amount: </CostDisplay>
+      <CostDisplay price={person.bill.toFixed(2)}>Total Bill: </CostDisplay>
     </div>
   );
 }
@@ -165,14 +169,26 @@ function ItemInput({ person, value, onChange }) {
 function Tip({ tip, onTipChange, total }) {
   const [customTip, setCustomTip] = useState(0);
   const [isCustom, setIsCustom] = useState(false);
+  const [selectedPercentage, setSelectedPercentage] = useState(null);
+
+  useEffect(() => {
+    if (selectedPercentage !== null && !isCustom) {
+      const newTip = (total * selectedPercentage) / 100;
+      onTipChange(newTip);
+    }
+  }, [total, selectedPercentage, isCustom]);
 
   function handlePercentageChange(e) {
-    if (e.target.value === "custom") {
+    const value = e.target.value;
+
+    if (value === "custom") {
       setIsCustom(true);
       onTipChange(Number(customTip));
     } else {
       setIsCustom(false);
-      onTipChange(Number(e.target.value));
+      const percentage = Number(value);
+      setSelectedPercentage(percentage);
+      onTipChange(Number((total * percentage) / 100));
     }
   }
 
@@ -186,19 +202,17 @@ function Tip({ tip, onTipChange, total }) {
     <div className="tip">
       <CostDisplay price={tip.toFixed(2)}>Total Tip</CostDisplay>
       <label>Tip Selection</label>
-      <select
-        value={isCustom ? "custom" : tip}
-        onChange={handlePercentageChange}
-      >
-        <option value={(0 * total) / 100}>0%</option>
-        <option value={(5 * total) / 100}>5%</option>
-        <option value={(10 * total) / 100}>10%</option>
-        <option value={(15 * total) / 100}>15%</option>
+
+      <select onChange={handlePercentageChange}>
+        <option value={0}>0%</option>
+        <option value={5}>5%</option>
+        <option value={10}>10%</option>
+        <option value={15}>15%</option>
         <option value="custom">Custom</option>
       </select>
       {isCustom && (
         <input
-          type="number"
+          type="text"
           value={customTip}
           onChange={handleCustomInput}
           placeholder="Enter custom tip"
