@@ -74,13 +74,15 @@ function Bill({ people }) {
   );
 
   const billTotal = people.reduce((sum, person) => sum + person.bill, 0);
+  const tipTotal = people.reduce((sum, person) => sum + person.tip, 0);
 
   return (
     <div className="slip">
       <Title>Bill</Title>
 
-      <CostDisplay price={billTotal.toFixed(2)}>Bill</CostDisplay>
       <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip</CostDisplay>
+      <CostDisplay price={billTotal.toFixed(2)}>Bill</CostDisplay>
+      <CostDisplay price={tipTotal.toFixed(2)}>Total Tip</CostDisplay>
       <p className="person-bill-output"></p>
       <p>Final payment details including tips</p>
       {people.map((p) => (
@@ -128,7 +130,7 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
     setInputValue(newValue);
 
     const items = newValue
-      .split(",")
+      .split(/[ ,]+/)
       .map((v) => parseFloat(v.trim()))
       .filter((v) => !isNaN(v));
 
@@ -139,7 +141,7 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
   return (
     <div className="person">
       <h3>{person.name}</h3>
-      <CostDisplay price={billAndTip.toFixed(2)}>Grand Total:</CostDisplay>
+      <CostDisplay price={billAndTip.toFixed(2)}>Bill & Tip:</CostDisplay>
       <ItemInput
         person={person}
         value={inputValue}
@@ -159,7 +161,7 @@ function ItemInput({ person, value, onChange }) {
     <div className="person-items">
       <label>What did you have?</label>
       <input type="text" value={value} onChange={onChange} />
-      <CostDisplay price={person.bill.toFixed(2)}>Total amount: </CostDisplay>
+      <CostDisplay price={person.bill.toFixed(2)}>Total Bill: </CostDisplay>
     </div>
   );
 }
@@ -186,7 +188,6 @@ function Tip({ tip, onTipChange, total }) {
       setIsCustom(false);
       const percentage = Number(value);
       setSelectedPercentage(percentage);
-      // const calculatedTip = (total * percentage) / 100;
       onTipChange(Number((total * percentage) / 100));
     }
   }
@@ -202,19 +203,16 @@ function Tip({ tip, onTipChange, total }) {
       <CostDisplay price={tip.toFixed(2)}>Total Tip</CostDisplay>
       <label>Tip Selection</label>
 
-      <select
-        value={isCustom ? "custom" : tip}
-        onChange={handlePercentageChange}
-      >
-        <option value="0">0%</option>
-        <option value="5">5%</option>
-        <option value="10">10%</option>
-        <option value="15">15%</option>
+      <select onChange={handlePercentageChange}>
+        <option value={0}>0%</option>
+        <option value={5}>5%</option>
+        <option value={10}>10%</option>
+        <option value={15}>15%</option>
         <option value="custom">Custom</option>
       </select>
       {isCustom && (
         <input
-          type="number"
+          type="text"
           value={customTip}
           onChange={handleCustomInput}
           placeholder="Enter custom tip"
