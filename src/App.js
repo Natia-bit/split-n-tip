@@ -25,8 +25,8 @@ function Title({ children }) {
 
 function CostDisplay({ price, children }) {
   return (
-    <div>
-      <p className="person-bill-output">
+    <div className="cost-display">
+      <p className="person-summary">
         {children} <span>R {price}</span>
       </p>
     </div>
@@ -55,6 +55,7 @@ export default function App() {
   return (
     <div className="App">
       <MainTitle>Split & Tip</MainTitle>
+      <hr className="style-one"></hr>
       <div className="slip-container">
         <Bill people={people} />
         <PeopleList
@@ -78,27 +79,31 @@ function Bill({ people }) {
 
   return (
     <div className="slip">
-      <Title>Bill</Title>
+      <Title>Bill Overview</Title>
+      <div className="person-bill-breakdown">
+        <CostDisplay price={billTotal.toFixed(2)}>Bill: </CostDisplay>
+        <CostDisplay price={tipTotal.toFixed(2)}>Total Tip: </CostDisplay>
+        <hr className="style-two"></hr>
+        <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip:</CostDisplay>
+      </div>
 
-      <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip</CostDisplay>
-      <CostDisplay price={billTotal.toFixed(2)}>Bill</CostDisplay>
-      <CostDisplay price={tipTotal.toFixed(2)}>Total Tip</CostDisplay>
-      <p className="person-bill-output"></p>
-      <p>Final payment details including tips</p>
-      {people.map((p) => (
-        <PersonSummary
-          key={p.id}
-          name={p.name}
-          amount={(p.bill + p.tip).toFixed(2)}
-        />
-      ))}
+      <div className="person-bill-breakdown">
+        <h3>Breakdown per person </h3>
+        {people.map((p) => (
+          <PersonSummary
+            key={p.id}
+            name={p.name}
+            amount={(p.bill + p.tip).toFixed(2)}
+          />
+        ))}
+      </div>
     </div>
   );
 }
 
 function PersonSummary({ name, amount }) {
   return (
-    <div className="person-bill-output">
+    <div className="person-summary">
       {name} <span>R {amount}</span>
     </div>
   );
@@ -160,7 +165,17 @@ function ItemInput({ person, value, onChange }) {
   return (
     <div className="person-items">
       <label>What did you have?</label>
-      <input type="text" value={value} onChange={onChange} />
+
+      <input
+        type="text"
+        value={value}
+        onChange={onChange}
+        placeholder="100 50 burger, 20.50sd"
+      />
+      <small className="input-hint">
+        Enter each item's cost, separated by commas or spaces. You can also
+        include descriptive text for easier tracking.
+      </small>
       <CostDisplay price={person.bill.toFixed(2)}>Total Bill: </CostDisplay>
     </div>
   );
