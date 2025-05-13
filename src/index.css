@@ -31,6 +31,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding-top: 150px;
 }
 
 h1,
@@ -42,12 +43,13 @@ h3 {
 }
 
 h1 {
-  padding-top: 2.5em;
+  padding-top: 1em;
   margin: 0;
 }
 
 h3 {
   text-align: left;
+  font-size: 1.3em;
 }
 
 label {
@@ -80,12 +82,12 @@ label {
 .cost-display {
   margin-top: 10px;
 }
+
 .person {
-  /* border: 1px solid black; */
   padding: 1.3em;
+  padding-bottom: 2em;
   margin-bottom: 2em;
   border-radius: 10px;
-
   background-color: var(--light-tone);
   color: var(--dark-tone);
 }
@@ -93,7 +95,8 @@ label {
 .person-summary {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  min-width: 300px;
+  align-items: left;
   justify-content: space-between;
   margin-bottom: 5px;
 }
@@ -122,7 +125,7 @@ input {
 }
 
 select {
-  height: 2em;
+  height: 3em;
   background: transparent;
   border: 1px solid var(--dark-tone);
 }
@@ -140,4 +143,58 @@ select {
 
 .style-two {
   border-top: 1px dashed #8c8b8b;
+}
+
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: var(--primary-color);
+
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+
+  padding: 1em 2em;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nav-bar-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 4em;
+  width: 100%;
+}
+
+.nav-bar-summary > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+input,
+select {
+  padding: 0.5em;
+  border-radius: 5px;
+  font-size: 1em;
+  font-family: inherit;
+}
+
+.person:hover {
+  background-color: #e8eef3;
+  transition: background-color 0.3s;
+}
+
+@media (max-width: 768px) {
+  .nav-bar {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .nav-bar > div {
+    align-items: center;
+  }
 }

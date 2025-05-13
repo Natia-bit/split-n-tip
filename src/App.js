@@ -54,10 +54,11 @@ export default function App() {
 
   return (
     <div className="App">
-      <MainTitle>Split & Tip</MainTitle>
-      <hr className="style-one"></hr>
+      {/* <MainTitle>Split & Tip</MainTitle> */}
+      <NavBar people={people}></NavBar>
+      {/* <hr className="style-one"></hr> */}
       <div className="slip-container">
-        <Bill people={people} />
+        {/* <Bill people={people} /> */}
         <PeopleList
           people={people}
           onUpdateTip={updateTip}
@@ -65,6 +66,15 @@ export default function App() {
         />
       </div>
     </div>
+  );
+}
+
+function NavBar({ people }) {
+  return (
+    <nav className="nav-bar">
+      <MainTitle>Split & Tip</MainTitle>
+      <Bill people={people}></Bill>
+    </nav>
   );
 }
 
@@ -78,24 +88,32 @@ function Bill({ people }) {
   const tipTotal = people.reduce((sum, person) => sum + person.tip, 0);
 
   return (
-    <div className="slip">
-      <Title>Bill Overview</Title>
-      <div className="person-bill-breakdown">
-        <CostDisplay price={billTotal.toFixed(2)}>Bill: </CostDisplay>
-        <CostDisplay price={tipTotal.toFixed(2)}>Total Tip: </CostDisplay>
-        <hr className="style-two"></hr>
-        <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip:</CostDisplay>
-      </div>
-
-      <div className="person-bill-breakdown">
-        <h3>Breakdown per person </h3>
-        {people.map((p) => (
-          <PersonSummary
-            key={p.id}
-            name={p.name}
-            amount={(p.bill + p.tip).toFixed(2)}
-          />
-        ))}
+    <div>
+      <div className="nav-bar-summary">
+        <div>
+          <p>
+            <span class="material-symbols-outlined">receipt_long</span>
+            <span> Bill Breakdown</span>
+          </p>
+          <CostDisplay price={billTotal.toFixed(2)}>Bill: </CostDisplay>
+          <CostDisplay price={tipTotal.toFixed(2)}>Total Tip: </CostDisplay>
+          <hr className="style-two"></hr>
+          <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip:</CostDisplay>
+        </div>
+        <hr></hr>
+        <div>
+          <p>
+            <span class="material-symbols-outlined">groups</span>
+            <span> Per Person</span>
+          </p>
+          {people.map((p) => (
+            <PersonSummary
+              key={p.id}
+              name={p.name}
+              amount={(p.bill + p.tip).toFixed(2)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
