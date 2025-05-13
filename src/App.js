@@ -268,6 +268,7 @@ function MyFooter() {
           target="_blank"
           rel="noopener noreferrer"
         >
+          <img src="/github-mark.png" alt="GitHub" width="16" height="16" />
           Source Code
         </a>
       </div>

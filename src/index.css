@@ -76,6 +76,7 @@ label {
   margin: 20px 0;
   padding: 1.5em;
   box-sizing: border-box;
+  margin-top: 210px;
 
   display: flex;
   flex-direction: column;
