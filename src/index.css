@@ -31,7 +31,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-top: 150px;
+  padding-top: 170px;
 }
 
 h1,
@@ -77,10 +77,6 @@ label {
   border-top: 4px solid #fff;
   border-bottom: 4px solid #fff;
   align-items: left;
-}
-
-.cost-display {
-  margin-top: 10px;
 }
 
 .person {
@@ -174,6 +170,15 @@ select {
   gap: 0.5em;
 }
 
+.nav-bar-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.description {
+  margin-left: 0.4em;
+}
 input,
 select {
   padding: 0.5em;
@@ -196,5 +201,23 @@ select {
 
   .nav-bar > div {
     align-items: center;
+  }
+
+  .nav-bar h1 {
+    display: none;
+  }
+
+  .nav-bar-summary {
+    flex-direction: column;
+    gap: 0.8em;
+  }
+
+  .nav-bar-summary,
+  .nav-bar-summary * {
+    font-size: 0.95em;
+  }
+
+  .nav-bar-summary hr {
+    display: none;
   }
 }

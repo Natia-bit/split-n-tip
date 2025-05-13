@@ -91,9 +91,9 @@ function Bill({ people }) {
     <div>
       <div className="nav-bar-summary">
         <div>
-          <p>
+          <p className="nav-bar-header">
             <span class="material-symbols-outlined">receipt_long</span>
-            <span> Bill Breakdown</span>
+            <span className="description">Bill Breakdown</span>
           </p>
           <CostDisplay price={billTotal.toFixed(2)}>Bill: </CostDisplay>
           <CostDisplay price={tipTotal.toFixed(2)}>Total Tip: </CostDisplay>
@@ -102,9 +102,9 @@ function Bill({ people }) {
         </div>
         <hr></hr>
         <div>
-          <p>
+          <p className="nav-bar-header">
             <span class="material-symbols-outlined">groups</span>
-            <span> Per Person</span>
+            <span className="description">Per Person</span>
           </p>
           {people.map((p) => (
             <PersonSummary
