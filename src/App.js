@@ -233,7 +233,7 @@ function Tip({ tip, onTipChange, total }) {
 
   return (
     <div className="tip">
-      <CostDisplay price={tip.toFixed(2)}>Total Tip</CostDisplay>
+      <CostDisplay price={tip.toFixed(2)}>Total Tip: </CostDisplay>
       <label>Tip Selection</label>
 
       <select onChange={handlePercentageChange}>
