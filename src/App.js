@@ -53,19 +53,19 @@ export default function App() {
   }
 
   return (
-    <div className="App">
-      {/* <MainTitle>Split & Tip</MainTitle> */}
-      <NavBar people={people}></NavBar>
-      {/* <hr className="style-one"></hr> */}
-      <div className="slip-container">
-        {/* <Bill people={people} /> */}
-        <PeopleList
-          people={people}
-          onUpdateTip={updateTip}
-          onUpdateBill={updateBill}
-        />
+    <>
+      <div className="App">
+        <NavBar people={people} />
+        <div className="slip-container">
+          <PeopleList
+            people={people}
+            onUpdateTip={updateTip}
+            onUpdateBill={updateBill}
+          />
+        </div>
       </div>
-    </div>
+      <MyFooter />
+    </>
   );
 }
 
@@ -163,6 +163,9 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
 
   return (
     <div className="person">
+      <div className="paperclip-icon">
+        <span class="material-symbols-outlined">attach_file</span>
+      </div>
       <h3>{person.name}</h3>
       <CostDisplay price={billAndTip.toFixed(2)}>Bill & Tip:</CostDisplay>
       <ItemInput
@@ -252,5 +255,25 @@ function Tip({ tip, onTipChange, total }) {
         />
       )}
     </div>
+  );
+}
+
+function MyFooter() {
+  return (
+    <footer className="footer">
+      <div>Created by: Natia Natisvili</div>
+      <div>
+        <a
+          href="https://github.com/Natia-bit/split-n-tip"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Source Code
+        </a>
+      </div>
+      <div>
+        <a href="mailto:natia.natisvili@gmail.com">natia.natisvili@gmail.com</a>
+      </div>
+    </footer>
   );
 }

@@ -20,18 +20,23 @@
 
 html {
   font-family: "Montserrat";
-  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif; */
 }
 
 body {
-  /* height: 100vh; */
-  /* color: #495057; */
   color: var(--dark-tone);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding-top: 170px;
+}
+
+html,
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
 }
 
 h1,
@@ -58,28 +63,31 @@ label {
 
 .slip-container {
   display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1em;
+  box-sizing: border-box;
 }
 
 .slip {
-  width: 400px;
-  margin: 50px;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px 0;
+  padding: 1.5em;
+  box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   gap: 0.7em;
 
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-  padding-top: 2em;
-  padding-bottom: 4em;
-  padding-left: 2em;
-  padding-right: 2em;
   border-top: 4px solid #fff;
   border-bottom: 4px solid #fff;
-  align-items: left;
 }
 
 .person {
+  position: relative;
   padding: 1.3em;
   padding-bottom: 2em;
   margin-bottom: 2em;
@@ -195,6 +203,33 @@ select {
   transition: background-color 0.3s;
 }
 
+.paperclip-icon {
+  position: absolute;
+  transform: rotate(-25deg);
+  z-index: 10;
+  top: -12px;
+}
+
+.footer {
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 0.8em 0;
+  margin-top: 2em;
+  font-family: "Courier Prime", monospace;
+  font-size: 0.7em;
+  color: var(--dark-tone);
+  background: var(--primary-color);
+  border-top: 1px solid var(--dark-tone);
+}
+
+.footer a {
+  color: var(--dark-tone);
+  text-decoration: none;
+}
+
 @media (max-width: 768px) {
   .nav-bar {
     flex-direction: column;
@@ -232,5 +267,23 @@ select {
   .tip label {
     font-weight: 500;
     font-size: 0.95em;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 0.5em;
+    text-align: center;
+    font-size: 0.75em;
+    padding: 1em;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  .footer {
+    flex-direction: column;
+    gap: 0.5em;
+    text-align: center;
+    font-size: 0.8em;
+    padding: 1em;
   }
 }
