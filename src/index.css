@@ -29,14 +29,17 @@ body {
 
 html,
 body {
-  width: 100%;
-  margin: 0;
-  padding: 0;
+  height: 100%;
 }
 
-.main {
+.layout {
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+}
+
+.App {
+  flex: 1;
 }
 
 h1,
@@ -76,7 +79,6 @@ label {
   margin: 20px 0;
   padding: 1.5em;
   box-sizing: border-box;
-  margin-top: 210px;
 
   display: flex;
   flex-direction: column;
@@ -100,10 +102,20 @@ label {
 .person-summary {
   display: flex;
   flex-direction: row;
-  min-width: 300px;
+  width: 100%;
+  /* min-width: 300px; */
   align-items: left;
   justify-content: space-between;
   margin-bottom: 5px;
+  word-wrap: break-word;
+}
+.cost-display {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5em;
+  word-wrap: break-word;
 }
 
 .person-items,
@@ -229,6 +241,9 @@ select {
 .footer a {
   color: var(--dark-tone);
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
 }
 
 @media (max-width: 768px) {

@@ -53,7 +53,7 @@ export default function App() {
   }
 
   return (
-    <>
+    <div className="layout">
       <div className="App">
         <NavBar people={people} />
         <div className="slip-container">
@@ -65,7 +65,7 @@ export default function App() {
         </div>
       </div>
       <MyFooter />
-    </>
+    </div>
   );
 }
 
