@@ -229,7 +229,7 @@ function ItemInput({ person, value, onChange }) {
 }
 
 function Tip({ tip, onTipChange, total, resetSignal }) {
-  const [customTip, setCustomTip] = useState(0);
+  const [customTip, setCustomTip] = useState("");
   const [isCustom, setIsCustom] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(null);
 
@@ -241,7 +241,7 @@ function Tip({ tip, onTipChange, total, resetSignal }) {
   }, [total, selectedPercentage, isCustom]);
 
   useEffect(() => {
-    setCustomTip(0);
+    setCustomTip("");
     setIsCustom(false);
     setSelectedPercentage(null);
   }, [resetSignal]);
@@ -262,9 +262,17 @@ function Tip({ tip, onTipChange, total, resetSignal }) {
   }
 
   function handleCustomInput(e) {
-    const value = Number(e.target.value);
-    setCustomTip(value);
-    onTipChange(value);
+    const input = e.target.value;
+    setCustomTip(input);
+
+    const value = input
+      .split(/[ ,]+/)
+      .map((v) => parseFloat(v.trim()))
+      .filter((v) => !isNaN(v));
+
+    const totalCustomTip = value.reduce((sum, v) => sum + Math.abs(v), 0);
+
+    onTipChange(totalCustomTip);
   }
 
   return (
