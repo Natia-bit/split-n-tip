@@ -25,8 +25,8 @@ function Title({ children }) {
 
 function CostDisplay({ price, children }) {
   return (
-    <div>
-      <p className="person-bill-output">
+    <div className="cost-display">
+      <p className="person-summary">
         {children} <span>R {price}</span>
       </p>
     </div>
@@ -35,6 +35,7 @@ function CostDisplay({ price, children }) {
 
 export default function App() {
   const [people, setPeople] = useState(data);
+  const [resetSignal, setResetSignal] = useState(0);
 
   function updateBill(id, bill) {
     setPeople((prevPeople) =>
@@ -52,18 +53,39 @@ export default function App() {
     );
   }
 
+  function resetAll() {
+    setPeople((prevPeople) =>
+      prevPeople.map((person) => ({ ...person, bill: 0, tip: 0 }))
+    );
+
+    setResetSignal((prev) => prev + 1);
+  }
+
   return (
-    <div className="App">
-      <MainTitle>Split & Tip</MainTitle>
-      <div className="slip-container">
-        <Bill people={people} />
-        <PeopleList
-          people={people}
-          onUpdateTip={updateTip}
-          onUpdateBill={updateBill}
-        />
+    <div className="layout">
+      <div className="App">
+        <NavBar people={people} />
+        <div className="slip-container">
+          <PeopleList
+            people={people}
+            onUpdateTip={updateTip}
+            onUpdateBill={updateBill}
+            onReset={resetAll}
+            resetSignal={resetSignal}
+          />
+        </div>
       </div>
+      <MyFooter />
     </div>
+  );
+}
+
+function NavBar({ people }) {
+  return (
+    <nav className="nav-bar">
+      <MainTitle>Split & Tip</MainTitle>
+      <Bill people={people}></Bill>
+    </nav>
   );
 }
 
@@ -77,53 +99,79 @@ function Bill({ people }) {
   const tipTotal = people.reduce((sum, person) => sum + person.tip, 0);
 
   return (
-    <div className="slip">
-      <Title>Bill</Title>
-
-      <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip</CostDisplay>
-      <CostDisplay price={billTotal.toFixed(2)}>Bill</CostDisplay>
-      <CostDisplay price={tipTotal.toFixed(2)}>Total Tip</CostDisplay>
-      <p className="person-bill-output"></p>
-      <p>Final payment details including tips</p>
-      {people.map((p) => (
-        <PersonSummary
-          key={p.id}
-          name={p.name}
-          amount={(p.bill + p.tip).toFixed(2)}
-        />
-      ))}
+    <div>
+      <div className="nav-bar-summary">
+        <div>
+          <p className="nav-bar-header">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <span className="description">Bill Breakdown</span>
+          </p>
+          <CostDisplay price={billTotal.toFixed(2)}>Bill: </CostDisplay>
+          <CostDisplay price={tipTotal.toFixed(2)}>Total Tip: </CostDisplay>
+          <hr className="style-two"></hr>
+          <CostDisplay price={grandTotal.toFixed(2)}>Bill & Tip:</CostDisplay>
+        </div>
+        <hr></hr>
+        <div>
+          <p className="nav-bar-header">
+            <span class="material-symbols-outlined">groups</span>
+            <span className="description">Per Person</span>
+          </p>
+          {people.map((p) => (
+            <PersonSummary
+              key={p.id}
+              name={p.name}
+              amount={(p.bill + p.tip).toFixed(2)}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
 
 function PersonSummary({ name, amount }) {
   return (
-    <div className="person-bill-output">
-      {name} <span>R {amount}</span>
+    <div className="person-summary">
+      {name} - <span className="amount"> R {amount}</span>
     </div>
   );
 }
 
-function PeopleList({ people, onUpdateTip, onUpdateBill }) {
+function PeopleList({
+  people,
+  onUpdateTip,
+  onUpdateBill,
+  onReset,
+  resetSignal,
+}) {
   return (
     <div className="slip">
       <Title>People</Title>
+      <button className="resest-btn" onClick={onReset}>
+        <span class="material-symbols-outlined">restart_alt</span>RESET
+      </button>
       {people.map((person) => (
         <Person
           key={person.id}
           person={person}
           onUpdateTip={onUpdateTip}
           onUpdateBill={onUpdateBill}
+          resetSignal={resetSignal}
         />
       ))}
     </div>
   );
 }
 
-function Person({ person, onUpdateTip, onUpdateBill }) {
+function Person({ person, onUpdateTip, onUpdateBill, resetSignal }) {
   const billAndTip = person.bill + person.tip;
   const bill = person.bill;
   const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    setInputValue("");
+  }, [resetSignal]);
 
   function handleItemInput(e) {
     const newValue = e.target.value;
@@ -140,6 +188,9 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
 
   return (
     <div className="person">
+      <div className="paperclip-icon">
+        <span class="material-symbols-outlined">attach_file</span>
+      </div>
       <h3>{person.name}</h3>
       <CostDisplay price={billAndTip.toFixed(2)}>Bill & Tip:</CostDisplay>
       <ItemInput
@@ -151,6 +202,7 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
         tip={person.tip}
         onTipChange={(tip) => onUpdateTip(person.id, tip)}
         total={bill}
+        resetSignal={resetSignal}
       />
     </div>
   );
@@ -160,13 +212,23 @@ function ItemInput({ person, value, onChange }) {
   return (
     <div className="person-items">
       <label>What did you have?</label>
-      <input type="text" value={value} onChange={onChange} />
+
+      <input
+        type="text"
+        value={value}
+        onChange={onChange}
+        placeholder="100 50 burger, 20.50sd"
+      />
+      <small className="input-hint">
+        Enter each item's cost, separated by commas or spaces. You can also
+        include descriptive text for easier tracking.
+      </small>
       <CostDisplay price={person.bill.toFixed(2)}>Total Bill: </CostDisplay>
     </div>
   );
 }
 
-function Tip({ tip, onTipChange, total }) {
+function Tip({ tip, onTipChange, total, resetSignal }) {
   const [customTip, setCustomTip] = useState(0);
   const [isCustom, setIsCustom] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(null);
@@ -178,8 +240,15 @@ function Tip({ tip, onTipChange, total }) {
     }
   }, [total, selectedPercentage, isCustom]);
 
+  useEffect(() => {
+    setCustomTip(0);
+    setIsCustom(false);
+    setSelectedPercentage(null);
+  }, [resetSignal]);
+
   function handlePercentageChange(e) {
     const value = e.target.value;
+    setSelectedPercentage(value);
 
     if (value === "custom") {
       setIsCustom(true);
@@ -200,7 +269,7 @@ function Tip({ tip, onTipChange, total }) {
 
   return (
     <div className="tip">
-      <CostDisplay price={tip.toFixed(2)}>Total Tip</CostDisplay>
+      <CostDisplay price={tip.toFixed(2)}>Total Tip: </CostDisplay>
       <label>Tip Selection</label>
 
       <select onChange={handlePercentageChange}>
@@ -219,5 +288,26 @@ function Tip({ tip, onTipChange, total }) {
         />
       )}
     </div>
+  );
+}
+
+function MyFooter() {
+  return (
+    <footer className="footer">
+      <div>Created by: Natia Natisvili</div>
+      <div>
+        <a
+          href="https://github.com/Natia-bit/split-n-tip"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img src="/github-mark.png" alt="GitHub" width="16" height="16" />
+          Source Code
+        </a>
+      </div>
+      <div>
+        <a href="mailto:natia.natisvili@gmail.com">natia.natisvili@gmail.com</a>
+      </div>
+    </footer>
   );
 }
