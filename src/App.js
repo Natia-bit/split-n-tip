@@ -131,6 +131,9 @@ function PeopleList({ people, onUpdateTip, onUpdateBill }) {
   return (
     <div className="slip">
       <Title>People</Title>
+      <button className="resest-btn">
+        <span class="material-symbols-outlined">restart_alt</span>RESET
+      </button>
       {people.map((person) => (
         <Person
           key={person.id}
