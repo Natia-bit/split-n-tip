@@ -108,6 +108,10 @@ label {
   margin-bottom: 5px;
   word-wrap: break-word;
 }
+
+.amount {
+  padding-left: 0.6em;
+}
 .cost-display {
   width: 100%;
   display: flex;
@@ -246,7 +250,7 @@ select {
   text-decoration: none;
   position: absolute;
   transform: rotate(20deg);
-  left: 800px;
+  left: 1000px;
 }
 
 .resest-btn {
@@ -343,11 +347,21 @@ select {
     font-size: 0.8em;
     padding: 1em;
   }
+
+  .resest-btn {
+    left: 720px;
+    transform: rotate(15deg);
+  }
 }
 
 @media (max-width: 600px) {
   select {
     font-size: 2em;
     height: 1em;
+  }
+
+  .resest-btn {
+    left: 280px;
+    transform: rotate(15deg);
   }
 }

@@ -35,6 +35,7 @@ function CostDisplay({ price, children }) {
 
 export default function App() {
   const [people, setPeople] = useState(data);
+  const [resetSignal, setResetSignal] = useState(0);
 
   function updateBill(id, bill) {
     setPeople((prevPeople) =>
@@ -52,6 +53,14 @@ export default function App() {
     );
   }
 
+  function resetAll() {
+    setPeople((prevPeople) =>
+      prevPeople.map((person) => ({ ...person, bill: 0, tip: 0 }))
+    );
+
+    setResetSignal((prev) => prev + 1);
+  }
+
   return (
     <div className="layout">
       <div className="App">
@@ -61,6 +70,8 @@ export default function App() {
             people={people}
             onUpdateTip={updateTip}
             onUpdateBill={updateBill}
+            onReset={resetAll}
+            resetSignal={resetSignal}
           />
         </div>
       </div>
@@ -122,16 +133,22 @@ function Bill({ people }) {
 function PersonSummary({ name, amount }) {
   return (
     <div className="person-summary">
-      {name} <span>R {amount}</span>
+      {name} - <span className="amount"> R {amount}</span>
     </div>
   );
 }
 
-function PeopleList({ people, onUpdateTip, onUpdateBill }) {
+function PeopleList({
+  people,
+  onUpdateTip,
+  onUpdateBill,
+  onReset,
+  resetSignal,
+}) {
   return (
     <div className="slip">
       <Title>People</Title>
-      <button className="resest-btn">
+      <button className="resest-btn" onClick={onReset}>
         <span class="material-symbols-outlined">restart_alt</span>RESET
       </button>
       {people.map((person) => (
@@ -140,16 +157,21 @@ function PeopleList({ people, onUpdateTip, onUpdateBill }) {
           person={person}
           onUpdateTip={onUpdateTip}
           onUpdateBill={onUpdateBill}
+          resetSignal={resetSignal}
         />
       ))}
     </div>
   );
 }
 
-function Person({ person, onUpdateTip, onUpdateBill }) {
+function Person({ person, onUpdateTip, onUpdateBill, resetSignal }) {
   const billAndTip = person.bill + person.tip;
   const bill = person.bill;
   const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    setInputValue("");
+  }, [resetSignal]);
 
   function handleItemInput(e) {
     const newValue = e.target.value;
@@ -180,6 +202,7 @@ function Person({ person, onUpdateTip, onUpdateBill }) {
         tip={person.tip}
         onTipChange={(tip) => onUpdateTip(person.id, tip)}
         total={bill}
+        resetSignal={resetSignal}
       />
     </div>
   );
@@ -205,7 +228,7 @@ function ItemInput({ person, value, onChange }) {
   );
 }
 
-function Tip({ tip, onTipChange, total }) {
+function Tip({ tip, onTipChange, total, resetSignal }) {
   const [customTip, setCustomTip] = useState(0);
   const [isCustom, setIsCustom] = useState(false);
   const [selectedPercentage, setSelectedPercentage] = useState(null);
@@ -217,8 +240,15 @@ function Tip({ tip, onTipChange, total }) {
     }
   }, [total, selectedPercentage, isCustom]);
 
+  useEffect(() => {
+    setCustomTip(0);
+    setIsCustom(false);
+    setSelectedPercentage(null);
+  }, [resetSignal]);
+
   function handlePercentageChange(e) {
     const value = e.target.value;
+    setSelectedPercentage(value);
 
     if (value === "custom") {
       setIsCustom(true);
