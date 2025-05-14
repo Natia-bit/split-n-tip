@@ -344,7 +344,6 @@ select {
     flex-direction: column;
     gap: 0.5em;
     text-align: center;
-    font-size: 0.8em;
     padding: 1em;
   }
 
@@ -356,12 +355,22 @@ select {
 
 @media (max-width: 600px) {
   select {
-    font-size: 2em;
-    height: 1em;
+    font-size: 0.8em;
   }
 
   .resest-btn {
     left: 280px;
+    transform: rotate(15deg);
+  }
+}
+
+@media (min-width: 1200px) {
+  select {
+    font-size: 2em;
+  }
+
+  .resest-btn {
+    left: 1420px;
     transform: rotate(15deg);
   }
 }
