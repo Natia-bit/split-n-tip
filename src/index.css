@@ -365,12 +365,8 @@ select {
 }
 
 @media (min-width: 1200px) {
-  select {
-    font-size: 2em;
-  }
-
   .resest-btn {
-    left: 1420px;
+    left: 1050px;
     transform: rotate(15deg);
   }
 }
